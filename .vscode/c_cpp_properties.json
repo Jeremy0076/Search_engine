@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/**",
+                // "/opt/homebrew/Cellar/boost/1.76.0/include/**",
+                "/Users/jeremy/School/毕业设计/Search_engine/install/boost/1.76.0/include/",
+                "/usr/local/include"
+            ],
+            "browse": {
+                "path": [
+                    "/usr/local/include",
+                    "/opt/homebrew/Cellar/boost/1.76.0/lib/**"
+                ]
+            },
+            "defines": [],
+            "macFrameworkPath": [
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks",
+                "/Users/jeremy/School/毕业设计/Search_engine/install/boost/1.76.0/include/**"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}
+
