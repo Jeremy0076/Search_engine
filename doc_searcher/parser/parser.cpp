@@ -62,7 +62,9 @@ bool ParseFile(const string& file_path,DocInfo* doc_info) {
     return true;   
 }
 
-//找到标题  <title> </title>
+/*
+找到标题  <title> </title>
+*/
 bool ParseTitle(const string& html,string* title) {
     size_t begin = html.find("<title>");
     if(begin == string::npos){
@@ -86,10 +88,12 @@ bool ParseTitle(const string& html,string* title) {
     return true;
 }
 
-// 本地路径形如:
-// ../data/input/html/thread.html
-// 在线路径形如:
-// https://www.boost.org/doc/libs/1_53_0/doc/html/thread.html
+/*
+本地路径形如:
+../data/input/html/thread.html
+在线路径形如:
+https://www.boost.org/doc/libs/1_53_0/doc/html/thread.html
+*/
 bool ParseUrl(const string& file_path,string* url) {
     string url_tail = file_path.substr(g_input_path.size());
     *url = g_url_head + url_tail;
