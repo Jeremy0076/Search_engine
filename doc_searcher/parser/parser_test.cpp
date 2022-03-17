@@ -3,7 +3,7 @@
 int main(){
     // 1. 得到html文件路径
     vector<string> file_list;
-    bool ret = GetFilePath(g_input_path,&file_list);
+    bool ret = GetFilePath(g_input_path, &file_list);
     if(ret == false){
         cout<<"get html file path error"<<endl;
         return 1;
@@ -22,14 +22,14 @@ int main(){
     }
     for(const auto& file_path : file_list){
         DocInfo doc_info;
-        ret = ParseFile(file_path,&doc_info);
+        ret = ParseFile(file_path, &doc_info);
         if(ret == false){
             cout<<file_path<<" file analysis error"<<endl;
             continue;
         }
         //cout<<doc_info._title<<' '<<doc_info._url<<endl;
         // 3. 解析的文件写入到 指定的输出文件中
-        WriteOutput(doc_info,output_file);
+        WriteOutput(doc_info, output_file);
     }
 
     output_file.close();

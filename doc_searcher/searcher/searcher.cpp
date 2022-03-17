@@ -25,13 +25,12 @@ namespace searcher{
     // 索引模块
 
     // jieba分词词典路径
-    const char* const DICT_BASE_PATH = "/Users/jeremy/School/毕业设计/thridparty/cppjieba-master/dict";
-    const char* const DICT_PATH = "/Users/jeremy/School/毕业设计/thridparty/cppjieba-master/dict/jieba.dict.utf8";
-    const char* const HMM_PATH = "/Users/jeremy/School/毕业设计/thridparty/cppjieba-master/dict/hmm_model.utf8";
-    const char* const USER_DICT_PATH = "/Users/jeremy/School/毕业设计/thridparty/cppjieba-master/dict/user.dict.utf8";
-    const char* const IDF_PATH = "/Users/jeremy/School/毕业设计/thridparty/cppjieba-master/dict/idf.utf8";
-    const char* const STOP_WORD_PATH = "/Users/jeremy/School/毕业设计/thridparty/cppjieba-master/dict/stop_words.utf8";
-
+    const char* const DICT_PATH = "../jieba_dict/jieba.dict.utf8";
+    const char* const HMM_PATH = "../jieba_dict/hmm_model.utf8";
+    const char* const USER_DICT_PATH = "../jieba_dict/user.dict.utf8";
+    const char* const IDF_PATH = "../jieba_dict/idf.utf8";
+    const char* const STOP_WORD_PATH = "../jieba_dict/stop_words.utf8";
+    
     /*
     建立索引
     */
