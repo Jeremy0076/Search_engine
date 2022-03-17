@@ -6,7 +6,7 @@
         "type": "shell",
         "command": "g++",//对应"preLaunchTask"c++为g++, c为gcc
         "args": [
-            "--std=c++14",
+            "--std=c++11",
             "-g",
             "${file}",
             "-I/Users/jeremy/School/毕业设计/Search_engine/install/boost/1.76.0/include/",

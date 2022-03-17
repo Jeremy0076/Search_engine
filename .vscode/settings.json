@@ -84,5 +84,12 @@
         "utility": "cpp",
         "variant": "cpp"
     },
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "C_Cpp.default.compilerArgs": [
+        "-g",
+        "${file}", 
+        "-std=c++11",
+        "-o",
+        "${fileDirname}/${fileBasenameNoExtension}"
+    ]
 }
