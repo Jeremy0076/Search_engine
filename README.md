@@ -1,19 +1,19 @@
 # Search_engine
 
-###【开发中
+### 开发中
   一个基于boost 在线文档所实现的一个简单的搜索引擎
 
   加入sam 不需要分词支持语句，不确定边界语言查询
 
-###【Install】
-  httplib
+### Install
+  1.httplib
   
-  jieba分词的库
+  2.jieba分词的库
 
-<br>boost：</br> 
+<br>3.boost：</br> 
 yum install boost-devel.x86_64
 
- <br>jsoncpp：</br> 
+ <br>4.jsoncpp：</br> 
  yum list | grep jsoncpp-devel 
   
  yum -y install epel-release
