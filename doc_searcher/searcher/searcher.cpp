@@ -223,6 +223,7 @@ namespace searcher{
             tmp["desc"]     = GetShowContent(doc_info->_content, backidx._word);
             value.append(tmp);
         }
+
         Json::FastWriter writer;
         *output = writer.write(value);
         return true;
