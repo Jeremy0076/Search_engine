@@ -10,10 +10,10 @@
   
   jieba分词的库
 
-  boost： 
+<br>boost：</br> 
         yum install boost-devel.x86_64
 
-  jsoncpp： 
+ <br>jsoncpp：</br> 
         yum list | grep jsoncpp-devel 
   
         yum -y install epel-release
