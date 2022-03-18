@@ -6,7 +6,8 @@
   加入sam 不需要分词支持语句，不确定边界语言查询
 
 ### Install
-  1.httplib
+ <br>1.httplib:</br>
+ g++版本必须得是4.9以上
   
   2.jieba分词的库
 
