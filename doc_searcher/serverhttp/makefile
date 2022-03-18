@@ -1,7 +1,7 @@
-FLAG=-std=c++11 -I ../../install/cppjieba-master/include -lpthread 
+FLAG=-std=c++11 -I ../../install/cppjieba-master/include -lpthread -L ../searcher -lsearcher
 
 
-main:main.cpp ../searcher/searcher.cpp
+main:main.cpp 
 	g++ $^ -o $@ $(FLAG)
 
 .PHONY:clean
