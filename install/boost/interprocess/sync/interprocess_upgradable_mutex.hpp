@@ -13,11 +13,7 @@
 #ifndef BOOST_INTERPROCESS_UPGRADABLE_MUTEX_HPP
 #define BOOST_INTERPROCESS_UPGRADABLE_MUTEX_HPP
 
-#ifndef BOOST_CONFIG_HPP
-#  include <boost/config.hpp>
-#endif
-#
-#if defined(BOOST_HAS_PRAGMA_ONCE)
+#if (defined _MSC_VER) && (_MSC_VER >= 1200)
 #  pragma once
 #endif
 
@@ -57,43 +53,25 @@ class interprocess_upgradable_mutex
 
    //Exclusive locking
 
-   //!Requires: The calling thread does not own the mutex.
-   //!
    //!Effects: The calling thread tries to obtain exclusive ownership of the mutex,
    //!   and if another thread has exclusive, sharable or upgradable ownership of
    //!   the mutex, it waits until it can obtain the ownership.
    //!Throws: interprocess_exception on error.
-   //! 
-   //!Note: A program may deadlock if the thread that has ownership calls 
-   //!   this function. If the implementation can detect the deadlock,
-   //!   an exception could be thrown.
    void lock();
 
-   //!Requires: The calling thread does not own the mutex.
-   //!
    //!Effects: The calling thread tries to acquire exclusive ownership of the mutex
    //!   without waiting. If no other thread has exclusive, sharable or upgradable
    //!   ownership of the mutex this succeeds.
    //!Returns: If it can acquire exclusive ownership immediately returns true.
    //!   If it has to wait, returns false.
    //!Throws: interprocess_exception on error.
-   //! 
-   //!Note: A program may deadlock if the thread that has ownership calls 
-   //!   this function. If the implementation can detect the deadlock,
-   //!   an exception could be thrown.
    bool try_lock();
 
-   //!Requires: The calling thread does not own the mutex.
-   //!
    //!Effects: The calling thread tries to acquire exclusive ownership of the mutex
    //!   waiting if necessary until no other thread has exclusive, sharable or
    //!   upgradable ownership of the mutex or abs_time is reached.
    //!Returns: If acquires exclusive ownership, returns true. Otherwise returns false.
    //!Throws: interprocess_exception on error.
-   //! 
-   //!Note: A program may deadlock if the thread that has ownership calls 
-   //!   this function. If the implementation can detect the deadlock,
-   //!   an exception could be thrown.
    bool timed_lock(const boost::posix_time::ptime &abs_time);
 
    //!Precondition: The thread must have exclusive ownership of the mutex.
@@ -103,43 +81,25 @@ class interprocess_upgradable_mutex
 
    //Sharable locking
 
-   //!Requires: The calling thread does not own the mutex.
-   //!
    //!Effects: The calling thread tries to obtain sharable ownership of the mutex,
    //!   and if another thread has exclusive ownership of the mutex,
    //!   waits until it can obtain the ownership.
    //!Throws: interprocess_exception on error.
-   //! 
-   //!Note: A program may deadlock if the thread that has ownership calls 
-   //!   this function. If the implementation can detect the deadlock,
-   //!   an exception could be thrown.
    void lock_sharable();
 
-   //!Requires: The calling thread does not own the mutex.
-   //!
    //!Effects: The calling thread tries to acquire sharable ownership of the mutex
    //!   without waiting. If no other thread has exclusive ownership
    //!   of the mutex this succeeds.
    //!Returns: If it can acquire sharable ownership immediately returns true. If it
    //!   has to wait, returns false.
    //!Throws: interprocess_exception on error.
-   //! 
-   //!Note: A program may deadlock if the thread that has ownership calls 
-   //!   this function. If the implementation can detect the deadlock,
-   //!   an exception could be thrown.
    bool try_lock_sharable();
 
-   //!Requires: The calling thread does not own the mutex.
-   //!
    //!Effects: The calling thread tries to acquire sharable ownership of the mutex
    //!   waiting if necessary until no other thread has exclusive
    //!   ownership of the mutex or abs_time is reached.
    //!Returns: If acquires sharable ownership, returns true. Otherwise returns false.
    //!Throws: interprocess_exception on error.
-   //! 
-   //!Note: A program may deadlock if the thread that has ownership calls 
-   //!   this function. If the implementation can detect the deadlock,
-   //!   an exception could be thrown.
    bool timed_lock_sharable(const boost::posix_time::ptime &abs_time);
 
    //!Precondition: The thread must have sharable ownership of the mutex.
@@ -149,43 +109,25 @@ class interprocess_upgradable_mutex
 
    //Upgradable locking
 
-   //!Requires: The calling thread does not own the mutex.
-   //!
    //!Effects: The calling thread tries to obtain upgradable ownership of the mutex,
    //!   and if another thread has exclusive or upgradable ownership of the mutex,
    //!   waits until it can obtain the ownership.
    //!Throws: interprocess_exception on error.
-   //!
-   //!Note: A program may deadlock if the thread that has ownership calls 
-   //!   this function. If the implementation can detect the deadlock,
-   //!   an exception could be thrown.
    void lock_upgradable();
 
-   //!Requires: The calling thread does not own the mutex.
-   //!
    //!Effects: The calling thread tries to acquire upgradable ownership of the mutex
    //!   without waiting. If no other thread has exclusive or upgradable ownership
    //!   of the mutex this succeeds.
    //!Returns: If it can acquire upgradable ownership immediately returns true.
    //!   If it has to wait, returns false.
    //!Throws: interprocess_exception on error.
-   //!
-   //!Note: A program may deadlock if the thread that has ownership calls 
-   //!   this function. If the implementation can detect the deadlock,
-   //!   an exception could be thrown.
    bool try_lock_upgradable();
 
-   //!Requires: The calling thread does not own the mutex.
-   //!
    //!Effects: The calling thread tries to acquire upgradable ownership of the mutex
    //!   waiting if necessary until no other thread has exclusive or upgradable
    //!   ownership of the mutex or abs_time is reached.
    //!Returns: If acquires upgradable ownership, returns true. Otherwise returns false.
    //!Throws: interprocess_exception on error.
-   //!
-   //!Note: A program may deadlock if the thread that has ownership calls 
-   //!   this function. If the implementation can detect the deadlock,
-   //!   an exception could be thrown.
    bool timed_lock_upgradable(const boost::posix_time::ptime &abs_time);
 
    //!Precondition: The thread must have upgradable ownership of the mutex.
@@ -255,7 +197,7 @@ class interprocess_upgradable_mutex
    //!Throws: An exception derived from interprocess_exception on error.
    bool try_unlock_sharable_and_lock_upgradable();
 
-   #if !defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
+   /// @cond
    private:
    typedef scoped_lock<interprocess_mutex> scoped_lock_t;
 
@@ -324,10 +266,10 @@ class interprocess_upgradable_mutex
          = ~(unsigned(3) << (sizeof(unsigned)*CHAR_BIT-2));
    };
    typedef base_constants_t<0> constants;
-   #endif   //#ifndef BOOST_INTERPROCESS_DOXYGEN_INVOKED
+   /// @endcond
 };
 
-#if !defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
+/// @cond
 
 template <int Dummy>
 const unsigned interprocess_upgradable_mutex::base_constants_t<Dummy>::max_readers;
@@ -383,8 +325,10 @@ inline bool interprocess_upgradable_mutex::try_lock()
 inline bool interprocess_upgradable_mutex::timed_lock
    (const boost::posix_time::ptime &abs_time)
 {
-   //Mutexes and condvars handle just fine infinite abs_times
-   //so avoid checking it here
+   if(abs_time == boost::posix_time::pos_infin){
+      this->lock();
+      return true;
+   }
    scoped_lock_t lck(m_mut, abs_time);
    if(!lck.owns())   return false;
 
@@ -469,8 +413,10 @@ inline bool interprocess_upgradable_mutex::try_lock_upgradable()
 inline bool interprocess_upgradable_mutex::timed_lock_upgradable
    (const boost::posix_time::ptime &abs_time)
 {
-   //Mutexes and condvars handle just fine infinite abs_times
-   //so avoid checking it here
+   if(abs_time == boost::posix_time::pos_infin){
+      this->lock_upgradable();
+      return true;
+   }
    scoped_lock_t lck(m_mut, abs_time);
    if(!lck.owns())   return false;
 
@@ -546,8 +492,10 @@ inline bool interprocess_upgradable_mutex::try_lock_sharable()
 inline bool interprocess_upgradable_mutex::timed_lock_sharable
    (const boost::posix_time::ptime &abs_time)
 {
-   //Mutexes and condvars handle just fine infinite abs_times
-   //so avoid checking it here
+   if(abs_time == boost::posix_time::pos_infin){
+      this->lock_sharable();
+      return true;
+   }
    scoped_lock_t lck(m_mut, abs_time);
    if(!lck.owns())   return false;
 
@@ -556,7 +504,7 @@ inline bool interprocess_upgradable_mutex::timed_lock_sharable
    //or there are too many sharable locks
    while (this->m_ctrl.exclusive_in
          || this->m_ctrl.num_upr_shar == constants::max_readers){
-      if(!this->m_first_gate.timed_wait(lck, abs_time)){
+      if(!this->m_first_gate.timed_wait(lck, abs_time)){   
          if(this->m_ctrl.exclusive_in
             || this->m_ctrl.num_upr_shar == constants::max_readers){
             return false;
@@ -659,8 +607,10 @@ inline bool interprocess_upgradable_mutex::try_unlock_upgradable_and_lock()
 inline bool interprocess_upgradable_mutex::timed_unlock_upgradable_and_lock
    (const boost::posix_time::ptime &abs_time)
 {
-   //Mutexes and condvars handle just fine infinite abs_times
-   //so avoid checking it here
+   if(abs_time == boost::posix_time::pos_infin){
+      this->unlock_upgradable_and_lock();
+      return true;
+   }
    scoped_lock_t lck(m_mut, abs_time);
    if(!lck.owns())   return false;
 
@@ -720,7 +670,7 @@ inline bool interprocess_upgradable_mutex::try_unlock_sharable_and_lock_upgradab
    return true;
 }
 
-#endif   //#ifndef BOOST_INTERPROCESS_DOXYGEN_INVOKED
+/// @endcond
 
 }  //namespace interprocess {
 }  //namespace boost {

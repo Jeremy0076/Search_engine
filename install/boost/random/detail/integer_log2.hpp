@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id$
+ * $Id: integer_log2.hpp 82609 2013-01-25 17:06:07Z marshall $
  *
  */
 
@@ -16,7 +16,7 @@
 
 #include <boost/config.hpp>
 #include <boost/limits.hpp>
-#include <boost/integer/integer_log2.hpp>
+#include <boost/pending/integer_log2.hpp>
 
 namespace boost {
 namespace random {

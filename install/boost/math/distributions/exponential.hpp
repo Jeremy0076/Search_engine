@@ -63,11 +63,11 @@ public:
    typedef RealType value_type;
    typedef Policy policy_type;
 
-   exponential_distribution(RealType l_lambda = 1)
-      : m_lambda(l_lambda)
+   exponential_distribution(RealType lambda = 1)
+      : m_lambda(lambda)
    {
       RealType err;
-      detail::verify_lambda("boost::math::exponential_distribution<%1%>::exponential_distribution", l_lambda, &err, Policy());
+      detail::verify_lambda("boost::math::exponential_distribution<%1%>::exponential_distribution", lambda, &err, Policy());
    } // exponential_distribution
 
    RealType lambda()const { return m_lambda; }
@@ -115,9 +115,6 @@ inline RealType pdf(const exponential_distribution<RealType, Policy>& dist, cons
       return result;
    if(0 == detail::verify_exp_x(function, x, &result, Policy()))
       return result;
-   // Workaround for VC11/12 bug:
-   if ((boost::math::isinf)(x))
-      return 0;
    result = lambda * exp(-lambda * x);
    return result;
 } // pdf
@@ -176,9 +173,6 @@ inline RealType cdf(const complemented2_type<exponential_distribution<RealType, 
       return result;
    if(0 == detail::verify_exp_x(function, c.param, &result, Policy()))
       return result;
-   // Workaround for VC11/12 bug:
-   if (c.param >= tools::max_value<RealType>())
-      return 0;
    result = exp(-c.param * lambda);
 
    return result;
@@ -258,13 +252,6 @@ template <class RealType, class Policy>
 inline RealType kurtosis_excess(const exponential_distribution<RealType, Policy>& /*dist*/)
 {
    return 6;
-}
-
-template <class RealType, class Policy>
-inline RealType entropy(const exponential_distribution<RealType, Policy>& dist)
-{
-   using std::log;
-   return 1 - log(dist.lambda());
 }
 
 } // namespace math

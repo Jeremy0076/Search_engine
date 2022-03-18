@@ -5,18 +5,15 @@
  * Subject to the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date$
+ * $Date: 2008-11-13 11:05:31 -0800 (Thu, 13 Nov 2008) $
  */
 
-#include <string>
 #include <locale>
 #include <iostream>
 #include <iterator> // i/ostreambuf_iterator
 #include <boost/io/ios_state.hpp>
-#include <boost/date_time/special_defs.hpp>
 #include <boost/date_time/time_facet.hpp>
 #include <boost/date_time/string_convert.hpp>
-#include <boost/date_time/local_time/local_time_types.hpp>
 #include <boost/date_time/local_time/local_date_time.hpp>
 #include <boost/date_time/local_time/posix_time_zone.hpp>
 #include <boost/date_time/local_time/conversion.hpp> // to_tm will be needed in the facets

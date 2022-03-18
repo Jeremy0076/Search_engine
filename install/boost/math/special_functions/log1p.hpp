@@ -8,8 +8,6 @@
 
 #ifdef _MSC_VER
 #pragma once
-#pragma warning(push)
-#pragma warning(disable:4702) // Unreachable code (release mode only warning)
 #endif
 
 #include <boost/config/no_tr1/cmath.hpp>
@@ -21,22 +19,11 @@
 #include <boost/math/tools/big_constant.hpp>
 #include <boost/math/policies/error_handling.hpp>
 #include <boost/math/special_functions/math_fwd.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
 
 #ifndef BOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS
 #  include <boost/static_assert.hpp>
 #else
 #  include <boost/assert.hpp>
-#endif
-
-#if defined(__GNUC__) && defined(BOOST_MATH_USE_FLOAT128)
-//
-// This is the only way we can avoid
-// warning: non-standard suffix on floating constant [-Wpedantic]
-// when building with -Wall -pedantic.  Neither __extension__
-// nor #pragma diagnostic ignored work :(
-//
-#pragma GCC system_header
 #endif
 
 namespace boost{ namespace math{
@@ -84,14 +71,14 @@ namespace detail
 // it performs no better than log(1+x): which is to say not very well at all.
 //
 template <class T, class Policy>
-T log1p_imp(T const & x, const Policy& pol, const std::integral_constant<int, 0>&)
+T log1p_imp(T const & x, const Policy& pol, const mpl::int_<0>&)
 { // The function returns the natural logarithm of 1 + x.
    typedef typename tools::promote_args<T>::type result_type;
    BOOST_MATH_STD_USING
 
    static const char* function = "boost::math::log1p<%1%>(%1%)";
 
-   if((x < -1) || (boost::math::isnan)(x))
+   if(x < -1)
       return policies::raise_domain_error<T>(
          function, "log1p(x) requires x > -1, but got x = %1%.", x, pol);
    if(x == -1)
@@ -107,7 +94,7 @@ T log1p_imp(T const & x, const Policy& pol, const std::integral_constant<int, 0>
       return x;
    detail::log1p_series<result_type> s(x);
    boost::uintmax_t max_iter = policies::get_max_series_iterations<Policy>();
-#if !BOOST_WORKAROUND(BOOST_BORLANDC, BOOST_TESTED_AT(0x582)) && !BOOST_WORKAROUND(__EDG_VERSION__, <= 245)
+#if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582)) && !BOOST_WORKAROUND(__EDG_VERSION__, <= 245)
    result_type result = tools::sum_series(s, policies::get_epsilon<result_type, Policy>(), max_iter);
 #else
    result_type zero = 0;
@@ -118,7 +105,7 @@ T log1p_imp(T const & x, const Policy& pol, const std::integral_constant<int, 0>
 }
 
 template <class T, class Policy>
-T log1p_imp(T const& x, const Policy& pol, const std::integral_constant<int, 53>&)
+T log1p_imp(T const& x, const Policy& pol, const mpl::int_<53>&)
 { // The function returns the natural logarithm of 1 + x.
    BOOST_MATH_STD_USING
 
@@ -171,7 +158,7 @@ T log1p_imp(T const& x, const Policy& pol, const std::integral_constant<int, 53>
 }
 
 template <class T, class Policy>
-T log1p_imp(T const& x, const Policy& pol, const std::integral_constant<int, 64>&)
+T log1p_imp(T const& x, const Policy& pol, const mpl::int_<64>&)
 { // The function returns the natural logarithm of 1 + x.
    BOOST_MATH_STD_USING
 
@@ -208,7 +195,7 @@ T log1p_imp(T const& x, const Policy& pol, const std::integral_constant<int, 64>
       BOOST_MATH_BIG_CONSTANT(T, 64, 0.00441709903782239229447)
    };
    static const T Q[] = {    
-      BOOST_MATH_BIG_CONSTANT(T, 64, 1.0),
+      BOOST_MATH_BIG_CONSTANT(T, 64, 1),
       BOOST_MATH_BIG_CONSTANT(T, 64, 4.26423872346263928361),
       BOOST_MATH_BIG_CONSTANT(T, 64, 7.48189472704477708962),
       BOOST_MATH_BIG_CONSTANT(T, 64, 6.94757016732904280913),
@@ -226,7 +213,7 @@ T log1p_imp(T const& x, const Policy& pol, const std::integral_constant<int, 64>
 }
 
 template <class T, class Policy>
-T log1p_imp(T const& x, const Policy& pol, const std::integral_constant<int, 24>&)
+T log1p_imp(T const& x, const Policy& pol, const mpl::int_<24>&)
 { // The function returns the natural logarithm of 1 + x.
    BOOST_MATH_STD_USING
 
@@ -281,8 +268,8 @@ struct log1p_initializer
          do_init(tag());
       }
       template <int N>
-      static void do_init(const std::integral_constant<int, N>&){}
-      static void do_init(const std::integral_constant<int, 64>&)
+      static void do_init(const mpl::int_<N>&){}
+      static void do_init(const mpl::int_<64>&)
       {
          boost::math::log1p(static_cast<T>(0.25), Policy());
       }
@@ -314,11 +301,19 @@ inline typename tools::promote_args<T>::type log1p(T x, const Policy&)
       policies::discrete_quantile<>,
       policies::assert_undefined<> >::type forwarding_policy;
 
-   typedef std::integral_constant<int,
-      precision_type::value <= 0 ? 0 :
-      precision_type::value <= 53 ? 53 :
-      precision_type::value <= 64 ? 64 : 0
-   > tag_type;
+   typedef typename mpl::if_<
+      mpl::less_equal<precision_type, mpl::int_<0> >,
+      mpl::int_<0>,
+      typename mpl::if_<
+         mpl::less_equal<precision_type, mpl::int_<53> >,
+         mpl::int_<53>,  // double
+         typename mpl::if_<
+            mpl::less_equal<precision_type, mpl::int_<64> >,
+            mpl::int_<64>, // 80-bit long double
+            mpl::int_<0> // too many bits, use generic version.
+         >::type
+      >::type
+   >::type tag_type;
 
    detail::log1p_initializer<value_type, forwarding_policy, tag_type>::force_instantiate();
 
@@ -326,7 +321,7 @@ inline typename tools::promote_args<T>::type log1p(T x, const Policy&)
       detail::log1p_imp(static_cast<value_type>(x), forwarding_policy(), tag_type()), "boost::math::log1p<%1%>(%1%)");
 }
 
-#if BOOST_WORKAROUND(BOOST_BORLANDC, BOOST_TESTED_AT(0x564))
+#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 // These overloads work around a type deduction bug:
 inline float log1p(float z)
 {
@@ -483,7 +478,7 @@ inline typename tools::promote_args<T>::type
    boost::math::detail::log1p_series<T> s(x);
    s();
    boost::uintmax_t max_iter = policies::get_max_series_iterations<Policy>();
-#if BOOST_WORKAROUND(BOOST_BORLANDC, BOOST_TESTED_AT(0x582))
+#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
    T zero = 0;
    T result = boost::math::tools::sum_series(s, policies::get_epsilon<T, Policy>(), max_iter, zero);
 #else
@@ -501,10 +496,6 @@ inline typename tools::promote_args<T>::type log1pmx(T x)
 
 } // namespace math
 } // namespace boost
-
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
 
 #endif // BOOST_MATH_LOG1P_INCLUDED
 

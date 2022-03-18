@@ -58,15 +58,15 @@ namespace boost{ namespace math{
     typedef RealType value_type;
     typedef Policy policy_type;
 
-    skew_normal_distribution(RealType l_location = 0, RealType l_scale = 1, RealType l_shape = 0)
-      : location_(l_location), scale_(l_scale), shape_(l_shape)
+    skew_normal_distribution(RealType location = 0, RealType scale = 1, RealType shape = 0)
+      : location_(location), scale_(scale), shape_(shape)
     { // Default is a 'standard' normal distribution N01. (shape=0 results in the normal distribution with no skew)
       static const char* function = "boost::math::skew_normal_distribution<%1%>::skew_normal_distribution";
 
       RealType result;
-      detail::check_scale(function, l_scale, &result, Policy());
-      detail::check_location(function, l_location, &result, Policy());
-      detail::check_skew_normal_shape(function, l_shape, &result, Policy());
+      detail::check_scale(function, scale, &result, Policy());
+      detail::check_location(function, location, &result, Policy());
+      detail::check_skew_normal_shape(function, shape, &result, Policy());
     }
 
     RealType location()const
@@ -122,6 +122,15 @@ namespace boost{ namespace math{
     const RealType shape = dist.shape();
 
     static const char* function = "boost::math::pdf(const skew_normal_distribution<%1%>&, %1%)";
+    if((boost::math::isinf)(x))
+    {
+      return 0; // pdf + and - infinity is zero.
+    }
+    // Below produces MSVC 4127 warnings, so the above used instead.
+    //if(std::numeric_limits<RealType>::has_infinity && abs(x) == std::numeric_limits<RealType>::infinity())
+    //{ // pdf + and - infinity is zero.
+    //  return 0;
+    //}
 
     RealType result = 0;
     if(false == detail::check_scale(function, scale, &result, Policy()))
@@ -136,15 +145,6 @@ namespace boost{ namespace math{
     {
       return result;
     }
-    if((boost::math::isinf)(x))
-    {
-       return 0; // pdf + and - infinity is zero.
-    }
-    // Below produces MSVC 4127 warnings, so the above used instead.
-    //if(std::numeric_limits<RealType>::has_infinity && abs(x) == std::numeric_limits<RealType>::infinity())
-    //{ // pdf + and - infinity is zero.
-    //  return 0;
-    //}
     if(false == detail::check_x(function, x, &result, Policy()))
     {
       return result;
@@ -287,7 +287,7 @@ namespace boost{ namespace math{
   {
     using namespace boost::math::constants;
 
-    const RealType delta2 = dist.shape() != 0 ? static_cast<RealType>(1) / (static_cast<RealType>(1)+static_cast<RealType>(1)/(dist.shape()*dist.shape())) : static_cast<RealType>(0);
+    const RealType delta2 = static_cast<RealType>(1) / (static_cast<RealType>(1)+static_cast<RealType>(1)/(dist.shape()*dist.shape()));
     //const RealType inv_delta2 = static_cast<RealType>(1)+static_cast<RealType>(1)/(dist.shape()*dist.shape());
 
     RealType variance = dist.scale()*dist.scale()*(static_cast<RealType>(1)-two_div_pi<RealType>()*delta2);
@@ -592,7 +592,7 @@ namespace boost{ namespace math{
 
     static const RealType factor = pi_minus_three<RealType>()*static_cast<RealType>(2);
 
-    const RealType delta2 = dist.shape() != 0 ? static_cast<RealType>(1) / (static_cast<RealType>(1)+static_cast<RealType>(1)/(dist.shape()*dist.shape())) : static_cast<RealType>(0);
+    const RealType delta2 = static_cast<RealType>(1) / (static_cast<RealType>(1)+static_cast<RealType>(1)/(dist.shape()*dist.shape()));
 
     const RealType x = static_cast<RealType>(1)-two_div_pi<RealType>()*delta2;
     const RealType y = two_div_pi<RealType>() * delta2;

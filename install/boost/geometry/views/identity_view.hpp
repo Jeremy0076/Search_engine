@@ -4,10 +4,6 @@
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
 
-// This file was modified by Oracle on 2020.
-// Modifications copyright (c) 2020 Oracle and/or its affiliates.
-// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
-
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
 
@@ -19,18 +15,12 @@
 #define BOOST_GEOMETRY_VIEWS_IDENTITY_VIEW_HPP
 
 
-#include <boost/range/begin.hpp>
-#include <boost/range/end.hpp>
+#include <boost/range.hpp>
 
 
 namespace boost { namespace geometry
 {
 
-// Silence warning C4512: assignment operator could not be generated
-#if defined(_MSC_VER)
-#pragma warning(push)
-#pragma warning(disable : 4512)
-#endif
 
 /*!
 \brief View on a range, not modifying anything
@@ -56,9 +46,6 @@ private :
     Range& m_range;
 };
 
-#if defined(_MSC_VER)
-#pragma warning(pop)
-#endif
 
 }} // namespace boost::geometry
 

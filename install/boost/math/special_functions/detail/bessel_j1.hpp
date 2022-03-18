@@ -15,16 +15,6 @@
 #include <boost/math/tools/big_constant.hpp>
 #include <boost/assert.hpp>
 
-#if defined(__GNUC__) && defined(BOOST_MATH_USE_FLOAT128)
-//
-// This is the only way we can avoid
-// warning: non-standard suffix on floating constant [-Wpedantic]
-// when building with -Wall -pedantic.  Neither __extension__
-// nor #pragma diagnostic ignored work :(
-//
-#pragma GCC system_header
-#endif
-
 // Bessel function of the first kind of order one
 // x <= 8, minimax rational approximations on root-bracketing intervals
 // x > 8, Hankel asymptotic expansion in Hart, Computer Approximations, 1968
@@ -180,7 +170,7 @@ T bessel_j1(T x)
         BOOST_ASSERT(sizeof(PS) == sizeof(QS));
         rc = evaluate_rational(PC, QC, y2);
         rs = evaluate_rational(PS, QS, y2);
-        factor = 1 / (sqrt(w) * constants::root_pi<T>());
+        factor = sqrt(2 / (w * pi<T>()));
         //
         // What follows is really just:
         //
@@ -188,12 +178,12 @@ T bessel_j1(T x)
         // value = factor * (rc * cos(z) - y * rs * sin(z));
         //
         // but using the sin/cos addition rules plus constants
-        // for the values of sin/cos of 3PI/4 which then cancel
-        // out with corresponding terms in "factor".
+        // for the values of sin/cos of 3PI/4.
         //
         T sx = sin(x);
         T cx = cos(x);
-        value = factor * (rc * (sx - cx) + y * rs * (sx + cx));
+        value = factor * (rc * (cx * -constants::one_div_root_two<T>() + sx * constants::half_root_two<T>()) 
+           - y * rs * (sx * -constants::one_div_root_two<T>() - cx * constants::half_root_two<T>()));
     }
 
     if (x < 0)

@@ -9,10 +9,10 @@
 # include <boost/python/object/instance.hpp>
 # include <boost/python/converter/registered.hpp>
 # include <boost/python/detail/decref_guard.hpp>
-# include <boost/python/detail/type_traits.hpp>
 # include <boost/python/detail/none.hpp>
 # include <boost/mpl/assert.hpp>
 # include <boost/mpl/or.hpp>
+# include <boost/type_traits/is_union.hpp>
 
 namespace boost { namespace python { namespace objects { 
 
@@ -24,8 +24,7 @@ struct make_instance_impl
     template <class Arg>
     static inline PyObject* execute(Arg& x)
     {
-        BOOST_MPL_ASSERT((mpl::or_<boost::python::detail::is_class<T>,
-                boost::python::detail::is_union<T> >));
+        BOOST_MPL_ASSERT((mpl::or_<is_class<T>, is_union<T> >));
 
         PyTypeObject* type = Derived::get_class_object(x);
 
@@ -47,7 +46,7 @@ struct make_instance_impl
               
             // Note the position of the internally-stored Holder,
             // for the sake of destruction
-            Py_SET_SIZE(instance, offsetof(instance_t, storage));
+            Py_SIZE(instance) = offsetof(instance_t, storage);
 
             // Release ownership of the python object
             protect.cancel();

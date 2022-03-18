@@ -23,7 +23,6 @@
 #include <boost/math/special_functions/sqrt1pm1.hpp>
 #include <boost/math/special_functions/log1p.hpp>
 #include <boost/math/constants/constants.hpp>
-#include <boost/math/special_functions/fpclassify.hpp>
 
 // This is the inverse of the hyperbolic sine function.
 
@@ -32,17 +31,22 @@ namespace boost
     namespace math
     {
        namespace detail{
+#if defined(__GNUC__) && (__GNUC__ < 3)
+        // gcc 2.x ignores function scope using declarations,
+        // put them in the scope of the enclosing namespace instead:
+        
+        using    ::std::abs;
+        using    ::std::sqrt;
+        using    ::std::log;
+        
+        using    ::std::numeric_limits;
+#endif
+        
         template<typename T, class Policy>
         inline T    asinh_imp(const T x, const Policy& pol)
         {
             BOOST_MATH_STD_USING
             
-            if((boost::math::isnan)(x))
-            {
-               return policies::raise_domain_error<T>(
-                  "boost::math::asinh<%1%>(%1%)",
-                  "asinh requires a finite argument, but got x = %1%.", x, pol);
-            }
             if        (x >= tools::forth_root_epsilon<T>())
             {
                if        (x > 1 / tools::root_epsilon<T>())

@@ -1,14 +1,8 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
 //
-// Copyright (c) 2008-2014 Bruno Lalande, Paris, France.
-// Copyright (c) 2008-2014 Barend Gehrels, Amsterdam, the Netherlands.
-// Copyright (c) 2009-2014 Mateusz Loskot, London, UK.
-
-// This file was modified by Oracle on 2014-2020.
-// Modifications copyright (c) 2014-2020, Oracle and/or its affiliates.
-
-// Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
-// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+// Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
+// Copyright (c) 2008-2012 Barend Gehrels, Amsterdam, the Netherlands.
+// Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -23,7 +17,6 @@
 #include <cstddef>
 
 #include <boost/concept_check.hpp>
-#include <boost/core/ignore_unused.hpp>
 
 #include <boost/geometry/core/access.hpp>
 #include <boost/geometry/core/coordinate_dimension.hpp>
@@ -31,7 +24,8 @@
 
 
 
-namespace boost { namespace geometry { namespace concepts
+
+namespace boost { namespace geometry { namespace concept
 {
 
 /*!
@@ -47,14 +41,11 @@ The point concept is defined as following:
   coordinate system (cartesian, spherical, etc)
 - there must be a specialization of traits::dimension defining its number
   of dimensions (2, 3, ...) (derive it conveniently
-  from std::integral_constant&lt;std::size_t, X&gt; for X-D)
+  from boost::mpl::int_&lt;X&gt; for X-D)
 - there must be a specialization of traits::access, per dimension,
   with two functions:
   - \b get to get a coordinate value
   - \b set to set a coordinate value (this one is not checked for ConstPoint)
-- for non-Cartesian coordinate systems, the coordinate system's units
-  must either be boost::geometry::degree or boost::geometry::radian
-
 
 \par Example:
 
@@ -99,12 +90,8 @@ class Point
     typedef typename coordinate_type<Geometry>::type ctype;
     typedef typename coordinate_system<Geometry>::type csystem;
 
-    // The following enum is used to fully instantiate the coordinate
-    // system class; this is needed in order to check the units passed
-    // to it for non-Cartesian coordinate systems.
-    enum { cs_check = sizeof(csystem) };
-
     enum { ccount = dimension<Geometry>::value };
+
 
     template <typename P, std::size_t Dimension, std::size_t DimensionCount>
     struct dimension_checker
@@ -152,12 +139,8 @@ class ConstPoint
     typedef typename coordinate_type<Geometry>::type ctype;
     typedef typename coordinate_system<Geometry>::type csystem;
 
-    // The following enum is used to fully instantiate the coordinate
-    // system class; this is needed in order to check the units passed
-    // to it for non-Cartesian coordinate systems.
-    enum { cs_check = sizeof(csystem) };
-
     enum { ccount = dimension<Geometry>::value };
+
 
     template <typename P, std::size_t Dimension, std::size_t DimensionCount>
     struct dimension_checker
@@ -166,7 +149,7 @@ class ConstPoint
         {
             const P* p = 0;
             ctype coord(geometry::get<Dimension>(*p));
-            boost::ignore_unused(p, coord);
+            boost::ignore_unused_variable_warning(coord);
             dimension_checker<P, Dimension+1, DimensionCount>::apply();
         }
     };
@@ -188,6 +171,6 @@ public:
 #endif
 };
 
-}}} // namespace boost::geometry::concepts
+}}} // namespace boost::geometry::concept
 
 #endif // BOOST_GEOMETRY_GEOMETRIES_CONCEPTS_POINT_CONCEPT_HPP

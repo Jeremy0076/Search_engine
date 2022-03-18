@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////////
 //
 // (C) Copyright Olaf Krzikalla 2004-2006.
-// (C) Copyright Ion Gaztanaga  2006-2014
+// (C) Copyright Ion Gaztanaga  2006-2012
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -17,13 +17,8 @@
 #include <boost/intrusive/detail/config_begin.hpp>
 #include <boost/intrusive/intrusive_fwd.hpp>
 #include <boost/intrusive/detail/common_slist_algorithms.hpp>
-#include <boost/intrusive/detail/algo_type.hpp>
 #include <cstddef>
-#include <boost/intrusive/detail/twin.hpp>   //for node_pair
-
-#if defined(BOOST_HAS_PRAGMA_ONCE)
-#  pragma once
-#endif
+#include <utility>
 
 namespace boost {
 namespace intrusive {
@@ -62,12 +57,6 @@ class linear_slist_algorithms
    typedef typename NodeTraits::node_ptr        node_ptr;
    typedef typename NodeTraits::const_node_ptr  const_node_ptr;
    typedef NodeTraits                           node_traits;
-   //A simple struct containing:
-   //
-   // typedef node_ptr type;
-   // node_ptr first;
-   // node_ptr second;
-   typedef twin<node_ptr>                  node_pair;
 
    #if defined(BOOST_INTRUSIVE_DOXYGEN_INVOKED)
 
@@ -147,7 +136,7 @@ class linear_slist_algorithms
    //! <b>Complexity</b>: Constant
    //!
    //! <b>Throws</b>: Nothing.
-   BOOST_INTRUSIVE_FORCEINLINE static void init_header(const node_ptr & this_node)
+   static void init_header(const node_ptr & this_node)
    {  NodeTraits::set_next(this_node, node_ptr ());  }
 
    //! <b>Requires</b>: this_node and prev_init_node must be in the same linear list.
@@ -159,7 +148,7 @@ class linear_slist_algorithms
    //! <b>Complexity</b>: Linear to the number of elements between prev_init_node and this_node.
    //!
    //! <b>Throws</b>: Nothing.
-   BOOST_INTRUSIVE_FORCEINLINE static node_ptr get_previous_node(const node_ptr & prev_init_node, const node_ptr & this_node)
+   static node_ptr get_previous_node(const node_ptr & prev_init_node, const node_ptr & this_node)
    {  return base_t::get_previous_node(prev_init_node, this_node);   }
 
    //! <b>Requires</b>: this_node must be in a linear list or be an empty linear list.
@@ -190,7 +179,7 @@ class linear_slist_algorithms
    //! <b>Complexity</b>: Constant
    //!
    //! <b>Throws</b>: Nothing.
-   static void swap_trailing_nodes(node_ptr this_node, node_ptr other_node)
+   static void swap_trailing_nodes(const node_ptr & this_node, const node_ptr & other_node)
    {
       node_ptr this_nxt    = NodeTraits::get_next(this_node);
       node_ptr other_nxt   = NodeTraits::get_next(other_node);
@@ -205,7 +194,7 @@ class linear_slist_algorithms
    //! <b>Throws</b>: Nothing.
    //!
    //! <b>Complexity</b>: This function is linear to the contained elements.
-   static node_ptr reverse(node_ptr p)
+   static node_ptr reverse(const node_ptr & p)
    {
       if(!p) return node_ptr();
       node_ptr i = NodeTraits::get_next(p);
@@ -228,9 +217,9 @@ class linear_slist_algorithms
    //! <b>Throws</b>: Nothing.
    //!
    //! <b>Complexity</b>: Linear to the number of elements plus the number moved positions.
-   static node_pair move_first_n_backwards(node_ptr p, std::size_t n)
+   static std::pair<node_ptr, node_ptr> move_first_n_backwards(const node_ptr & p, std::size_t n)
    {
-      node_pair ret;
+      std::pair<node_ptr, node_ptr> ret;
       //Null shift, or count() == 0 or 1, nothing to do
       if(!n || !p || !NodeTraits::get_next(p)){
          return ret;
@@ -283,9 +272,9 @@ class linear_slist_algorithms
    //! <b>Throws</b>: Nothing.
    //!
    //! <b>Complexity</b>: Linear to the number of elements plus the number moved positions.
-   static node_pair move_first_n_forward(node_ptr p, std::size_t n)
+   static std::pair<node_ptr, node_ptr> move_first_n_forward(const node_ptr & p, std::size_t n)
    {
-      node_pair ret;
+      std::pair<node_ptr, node_ptr> ret;
       //Null shift, or count() == 0 or 1, nothing to do
       if(!n || !p || !NodeTraits::get_next(p))
          return ret;
@@ -329,16 +318,6 @@ class linear_slist_algorithms
       return ret;
    }
 };
-
-/// @cond
-
-template<class NodeTraits>
-struct get_algo<LinearSListAlgorithms, NodeTraits>
-{
-   typedef linear_slist_algorithms<NodeTraits> type;
-};
-
-/// @endcond
 
 } //namespace intrusive
 } //namespace boost

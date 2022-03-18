@@ -10,7 +10,6 @@
 #pragma once
 #endif
 
-#include <boost/math/special_functions/math_fwd.hpp>
 #include <boost/math/special_functions/factorials.hpp>
 #include <boost/math/special_functions/beta.hpp>
 #include <boost/math/policies/error_handling.hpp>
@@ -27,12 +26,12 @@ T binomial_coefficient(unsigned n, unsigned k, const Policy& pol)
       return policies::raise_domain_error<T>(
          function, 
          "The binomial coefficient is undefined for k > n, but got k = %1%.",
-         static_cast<T>(k), pol);
+         k, pol);
    T result;
    if((k == 0) || (k == n))
-      return static_cast<T>(1);
+      return 1;
    if((k == 1) || (k == n-1))
-      return static_cast<T>(n);
+      return n;
 
    if(n <= max_factorial<T>::value)
    {
@@ -61,15 +60,9 @@ T binomial_coefficient(unsigned n, unsigned k, const Policy& pol)
 // we'll promote to double:
 //
 template <>
-inline float binomial_coefficient<float, policies::policy<> >(unsigned n, unsigned k, const policies::policy<>&)
+inline float binomial_coefficient<float, policies::policy<> >(unsigned n, unsigned k, const policies::policy<>& pol)
 {
-   typedef policies::normalise<
-       policies::policy<>,
-       policies::promote_float<true>,
-       policies::promote_double<false>,
-       policies::discrete_quantile<>,
-       policies::assert_undefined<> >::type forwarding_policy;
-   return policies::checked_narrowing_cast<float, forwarding_policy>(binomial_coefficient<double>(n, k, forwarding_policy()), "boost::math::binomial_coefficient<%1%>(unsigned,unsigned)");
+   return policies::checked_narrowing_cast<float, policies::policy<> >(binomial_coefficient<double>(n, k, pol), "boost::math::binomial_coefficient<%1%>(unsigned,unsigned)");
 }
 
 template <class T>
