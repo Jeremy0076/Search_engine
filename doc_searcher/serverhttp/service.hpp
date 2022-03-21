@@ -2,16 +2,19 @@
 #include <string>
 #include "httplib.h"
 #include "../searcher/searcher.hpp"
+#include "config.hpp"
 
 const int SERVER_ERROR = 1;
 
-searcher::Searcher search;
+searcher::Searcher searchEngine;
 
 // const string g_input_path = "../data/input/html";
-const string g_output_path = "../data/tmp/raw_input.txt"; 
+// const string g_output_path = "../data/tmp/raw_input.txt"; 
+// const string g_raw_input_path    = "../data/tmp/raw_input.txt";
+extern string g_raw_input_path;
 
 int serviceInit(){
-    bool ret = search.Init(g_output_path);
+    bool ret = searchEngine.Init(g_raw_input_path);
     if(!ret){
         cout<<"searcher init error"<<endl;
         return SERVER_ERROR;
@@ -27,7 +30,7 @@ void GetWebData(const httplib::Request& req, httplib::Response& resp){
     
     string query = req.get_param_value("query");
     string results;
-    search.Search(query,&results);
+    searchEngine.Search(query,&results);
     resp.set_content(results,"application/json;charset=utf-8");
     cout<<results<<endl;
 }

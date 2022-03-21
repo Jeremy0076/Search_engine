@@ -10,6 +10,7 @@
 #include<boost/filesystem/path.hpp>
 
 #include "../common/util.hpp"
+#include "../serverhttp/config.hpp"
 
 using std::cout;
 using std::endl;
@@ -25,13 +26,16 @@ struct DocInfo{
 };
 
 //boost 中 .html文件的路径
-extern string g_input_path;
+static string g_input_path;
 
 //解析后的每个html文件的内容，所存放的路径
-extern string g_output_path;
+static string g_output_path;
 
 // 在线文档的路径 公共前缀
-extern string g_url_head;
+static string g_url_head;
+
+// 初始化路径变量
+void ParseInit();
 
 //得到所有html文件路径
 bool GetFilePath(const string& input_path,vector<string>* file_list);
@@ -50,3 +54,6 @@ bool ParseFile(const string& file_path,DocInfo* doc_info);
 
 //将分词后的结果写入文件
 void WriteOutput(const DocInfo& doc_info,std::ofstream& ofstream);
+
+//解析所有html文件，生成raw_input.txt
+int ParseHTMLData(const string& input_path);
