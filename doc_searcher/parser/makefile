@@ -1,8 +1,8 @@
-FLAG=-std=c++11 -I /opt/homebrew/Cellar/boost/1.76.0 -lboost_filesystem -lboost_system 
+FLAG=-std=c++11 -I ../../install/cppjieba-master/include -lboost_filesystem -lboost_system -ljsoncpp
 
-parser:parser.cpp
-	g++ $^ -o $@ ${FLAG}
+libparser.so:parser.cpp parser.hpp
+	g++ parser.cpp -o $@ -shared -fPIC $(FLAG)
 
 .PHONY:clean
 clean:
-	rm -f parser
+	rm -rf libparser.so
