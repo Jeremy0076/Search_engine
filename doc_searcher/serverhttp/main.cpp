@@ -29,6 +29,7 @@ int main(){
 
     // 加载解析路径配置
     ParseInit();
+    outputConfig();
 
     // // 解析html数据
     // err = ParseHTMLData(g_input_path);
@@ -50,6 +51,6 @@ int main(){
 
     // server api
     server.Get("/searcher", GetWebData);
-    server.listen(listenIP.c_str(),listenPort);
+    server.listen("0.0.0.0",19998);
     return 0;
 }

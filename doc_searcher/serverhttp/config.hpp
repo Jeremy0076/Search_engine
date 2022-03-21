@@ -1,18 +1,21 @@
 #pragma once
 
 #include <fstream>
-#include <list>
+#include <vector>
 #include <iostream>
 
 using namespace std;
 
-#define FILENAME "env.conf"
+#define FILENAME "../env.conf"
 
 static string g_raw_input_path;
 static string g_root_path; 
 static string listenIP;
 static int listenPort;
 static string indexModel;
+extern string g_input_path;
+extern string g_output_path;
+extern string g_url_head;
 
 struct node {
     string _key;
@@ -21,7 +24,7 @@ struct node {
 };
 
 size_t config_size = 0;
-list<node*> config_info = list<node*> ();
+vector<node*> config_info = vector<node*> ();
 
 const string GetString(const string key);           // 得到字符串类型的 value
 int GetInt(const string key, const int defaultKey); // 得到int 类型的数据，默认值为 del
@@ -31,13 +34,19 @@ void rightTrim(string &str);                        // 清除字符串右边空�
 bool isChar(char ch);                               // 判断是否为字母    
 int loadConfig();                                   // 加载配置
 
-bool Read(const string fileName = "env.conf"){
+bool Read(const string fileName = "../env.conf"){
     cout<< " loading "<< fileName <<endl;
-    if(fileName.size() == 0) return false;
+    if(fileName.size() == 0) {
+        cout<< fileName << " is empty "<<endl;
+        return false;
+    }
 
     ifstream fp;
     fp.open(fileName, std::ios::in); //只读
-    if(!fp.is_open()) return false;  //文件打开失败
+    if(!fp.is_open()) {
+        cout<< "open "<<fileName<<" failed "<<endl;
+        return false;  //文件打开失败
+    }
 
     while(!fp.eof()){
         string buf("");
@@ -80,14 +89,14 @@ int GetInt(const string key, const int defaultKey){
 
 void leftTrim(string &str){
     int p = 0;
-    while(p < str.size() && (str[p] == 9 || str[p] == 10 || str[p] == 13 || str[p] == 32)) p++;
+    while(p < str.size() && ( str[p] == 10 || str[p] == 13 || str[p] == 32)) p++;
     string tmp = str.substr(p);
     str = tmp;
 }
 
 void rightTrim(string &str){
     int p = str.size() - 1;
-    while(p >= 0 && (str[p] == 9 || str[p] == 10 || str[p] == 13 || str[p] == 32))
+    while(p >= 0 && ( str[p] == 10 || str[p] == 13 || str[p] == 32))
         str.erase(p--);
 }
 
@@ -105,4 +114,17 @@ int loadConfig(){
     listenPort  = GetInt("listenPort", 19998);
     indexModel = GetString("index");
     return 0;
+}
+
+void outputConfig(){
+    cout<< "output config now =============" <<endl;
+
+    cout<<" g_input_path "<<g_input_path<<endl;
+    cout<<" g_output_path "<<g_output_path<<endl;
+    cout<<" g_url_head "<<g_url_head<<endl;
+    cout<<" g_raw_input_path "<<g_raw_input_path<<endl;
+    cout<<" listenIp "<<listenIP<<endl;
+    cout<<" listenPort "<<listenPort<<endl;
+    cout<<" wwwroot "<<g_root_path<<endl;
+    cout<<" index "<<indexModel<<endl;
 }

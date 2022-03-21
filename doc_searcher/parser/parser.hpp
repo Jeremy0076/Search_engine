@@ -26,13 +26,13 @@ struct DocInfo{
 };
 
 //boost 中 .html文件的路径
-static string g_input_path;
+string g_input_path;
 
 //解析后的每个html文件的内容，所存放的路径
-static string g_output_path;
+string g_output_path;
 
 // 在线文档的路径 公共前缀
-static string g_url_head;
+string g_url_head;
 
 // 初始化路径变量
 void ParseInit();
