@@ -13,8 +13,8 @@ searcher::Searcher searchEngine;
 // const string g_raw_input_path    = "../data/tmp/raw_input.txt";
 extern string g_raw_input_path;
 
-int serviceInit(){
-    bool ret = searchEngine.Init(g_raw_input_path);
+int serviceInit(const string& indexModel){
+    bool ret = searchEngine.Init(g_raw_input_path, indexModel);
     if(!ret){
         cout<<"searcher init error"<<endl;
         return SERVER_ERROR;
@@ -32,5 +32,5 @@ void GetWebData(const httplib::Request& req, httplib::Response& resp){
     string results;
     searchEngine.Search(query,&results);
     resp.set_content(results,"application/json;charset=utf-8");
-    cout<<results<<endl;
+    cout<< " search len : "<< results.size()<<endl;
 }

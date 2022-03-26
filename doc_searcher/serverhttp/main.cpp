@@ -39,7 +39,7 @@ int main(){
     // } 
 
     // 初始化索引
-    err = serviceInit();
+    err = serviceInit(indexModel);
     if(err != 0){
         cout<< " service init error "<<endl;
         return SERVER_ERROR;
