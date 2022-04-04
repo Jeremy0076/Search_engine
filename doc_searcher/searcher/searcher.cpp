@@ -313,39 +313,29 @@ namespace searcher{
         int p = _last, cur = ++_size;
         // 当前新增字符状态
         state *curSt = new state();
-        // cout<<"curst = "<<curSt->len<<" "<<curSt->link<<" "<<curSt->siz<<endl;
+
         // 添加倒排表节点
         curSt->addDocInfoToInvert(doc_info, score);
         stPos.push_back(curSt);
         stPos[cur]->len = stPos[_last]->len + 1;
         stPos[cur]->siz = 1;
-        // cout<<"pp"<<p<<endl;
-        // solution1
-        p = _last;
-        // cout<<"stpos another = "<<stPos[p]->len<<" "<<stPos[p]->link<<" "<<stPos[p]->siz<<endl;
-        // cout<<"stpos[p]->to[c] = "<<stPos[p]->to[c]<<endl;
-        // cout<<"p = "<<p<<"c = "<<c<<"_last = "<<_last<<"cur="<<cur<<endl;
         for(p = _last; p && !stPos[p]->to[c] ; p = stPos[p]->link) {
-            // cout<<"p:"<<p<<"c:"<<c<<"cur"<<cur<<endl;
             stPos[p]->to[c] = cur;
         }
         
-        // cout<<"4"<<endl;
         if(!p)  stPos[cur]->link = 1; // link指向开始节点
         else{
-            // cout<<"5"<<endl;
             int q = stPos[p]->to[c];
-            // cout<<"q = "<<q<<"len = "<<stPos[q]->len<<"/"<<stPos[p]->len<<endl;
+
             // solution2 - A类
             if(stPos[q]->len == stPos[p]->len + 1){
                 stPos[cur]->link = q;
                 int fa = stPos[cur]->link;
-                // cout<<"fa = "<<fa<<endl;
-                // 后缀路径依次添加倒排节点
+       
+                // 后缀路径依次添加倒排节点和添加权重
                 while(fa != 1){
                     stPos[fa]->addDocInfoToInvert(doc_info, score);
                     fa = stPos[fa]->link;
-                    // cout<<"fa:"<<fa<<endl;
                 }
             }else{
                 // solution2 - B类
@@ -362,6 +352,8 @@ namespace searcher{
                 }  
 
                 stPos[cur]->link = stPos[q]->link = cl;
+                // 添加权重
+                stPos[cl]->addDocInfoToInvert(doc_info, score);
             }
         }
         // cout<<"end:== "<<_last<<cur<<endl;
@@ -397,9 +389,7 @@ namespace searcher{
 
         for(int i = 0; i<lens; i++){
             sam->Extend(str[i], score, doc_info);
-            // cout<<"sam extend:"<<str[i]<<endl;
         }
-        // cout<<"str:"<<str<<"done"<<endl;
     }
 
 }
