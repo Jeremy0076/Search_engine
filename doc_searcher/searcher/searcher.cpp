@@ -342,7 +342,7 @@ namespace searcher{
                 int cl = ++_size;
                 state* clone = new state();
                 stPos.push_back(clone);
-                stPos[cl]->len              = stPos[p]->len + 1;
+                stPos.push_back(clone);
                 stPos[cl]->to               = stPos[q]->to;
                 stPos[cl]->link             = stPos[q]->link;
                 stPos[cl]->inverted_table   = stPos[q]->inverted_table;
@@ -356,7 +356,7 @@ namespace searcher{
                 stPos[cl]->addDocInfoToInvert(doc_info, score);
             }
         }
-        // cout<<"end:== "<<_last<<cur<<endl;
+       
         _last = cur;
     }
 
